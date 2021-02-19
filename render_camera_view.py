@@ -1,3 +1,10 @@
+'''
+    This script is used to render output of model in camera view.
+    Useful to create a demo video.
+    6 cameras are used.
+'''
+
+
 import json
 import math
 import cv2
@@ -19,11 +26,14 @@ from tqdm import tqdm
 
 from nuscenes.utils.data_classes import LidarPointCloud, RadarPointCloud, Box
 from nuscenes.utils.geometry_utils import view_points, box_in_image, BoxVisibility, transform_matrix
-# from nuscenes.utils.map_mask import MapMask
-# from nuscenes.utils.color_map import get_colormap
 from nuscenes.nuscenes import NuScenes
 
-results_file = './test_set/mini/results_nusc.json'
+
+assert len(sys.argv) == 2, "\nProvide a single json file containing bounding boxes in Lidar View. \
+                            \nExpected order of the file is as the same as mmdetection3d's\n"
+
+results_file = sys.argv[1]
+
 with open(results_file, 'r') as res_file:
     results = res_file.read()
 
@@ -31,6 +41,7 @@ results = json.loads(results)
 # results => ['meta', 'results']
 results = results['results']
 
+import pdb; pdb.set_trace()
 
 def get_boxes(nusc, sample_data_token: str) -> List[Box]:
     """
@@ -45,8 +56,6 @@ def get_boxes(nusc, sample_data_token: str) -> List[Box]:
     sd_record = nusc.get('sample_data', sample_data_token)
     curr_sample_record = nusc.get('sample', sd_record['sample_token'])
 
-    # import pdb; pdb.set_trace()
-
     # if curr_sample_record['prev'] == "" or sd_record['is_key_frame']:
     # if sd_record['is_key_frame']:
         # If no previous annotations available, or if sample_data is keyframe just return the current ones.
@@ -58,7 +67,7 @@ def get_boxes(nusc, sample_data_token: str) -> List[Box]:
     for pred in predictions:
         box = Box(pred['translation'], pred['size'], Quaternion(pred['rotation']),
            name=pred['detection_name'], token=None)
-        if pred['detection_score']>=0.75:
+        if pred['detection_score']>=0.7:
             boxes.append(box)
 
     # else:
@@ -101,7 +110,7 @@ def get_sample_data(nusc,
         cam_intrinsic = np.array(cs_record['camera_intrinsic'])
         imsize = (sd_record['width'], sd_record['height'])
     else:
-        assert 1==0
+        assert False, "Only camera modalities are supported"
 
     # Retrieve all sample annotations and map to sensor coordinate system.
     boxes = get_boxes(nusc, sample_data_token)
@@ -268,3 +277,5 @@ def render_scene(nusc,
 
 
 # nusc_test_set = NuScenes(version='v1.0-test', dataroot='./test_set/')
+# obtain some scene token from nusc_test_set obj., e.g: scene  
+# render_scene(nusc_test_set, scene, out_path=None)      # Provide out_path to save rendering as a video 
