@@ -2,9 +2,9 @@
 	The script is for converting sequential images to a single video (.avi) file.
 
 	Replace directory to the one containing images
-	Output is converted_video.avi in current directory
+	Output is converted_video.avi in current directory which you are running this script using python command.
 
-	You can specify sleep and next image selection time
+	You can specify sleep and next image selection time, in this case 0.135 and 0.02, randomly used.
 '''
 
 import cv2
@@ -25,7 +25,6 @@ files.sort()
 for file in files:
 	img = cv2.imread(abs_dir + file)
 	images.append(img)
-
 
 height, width, channels = images[0].shape
 size = (width, height)
