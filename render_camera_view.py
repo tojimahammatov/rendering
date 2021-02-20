@@ -41,7 +41,7 @@ results = json.loads(results)
 # results => ['meta', 'results']
 results = results['results']
 
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
 
 def get_boxes(nusc, sample_data_token: str) -> List[Box]:
     """
