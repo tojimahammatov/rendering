@@ -30,7 +30,7 @@ from nuscenes.nuscenes import NuScenes
 
 
 assert len(sys.argv) == 2, "\nProvide a single json file containing bounding boxes in Lidar View. \
-                            \nExpected order of the file is as the same as mmdetection3d's\n"
+                            \n\n NuScenes submission format is expected.\n\n"
 
 results_file = sys.argv[1]
 
@@ -38,7 +38,9 @@ with open(results_file, 'r') as res_file:
     results = res_file.read()
 
 results = json.loads(results)
-# results => ['meta', 'results']
+
+# results => ['meta', 'results']    # submission file format
+
 results = results['results']
 
 # import pdb; pdb.set_trace()
@@ -67,6 +69,9 @@ def get_boxes(nusc, sample_data_token: str) -> List[Box]:
     for pred in predictions:
         box = Box(pred['translation'], pred['size'], Quaternion(pred['rotation']),
            name=pred['detection_name'], token=None)
+        
+        # if you want all outputs remove if line, 
+        #    currently predictions whose scores greater than 0.7 are chosen to render 
         if pred['detection_score']>=0.7:
             boxes.append(box)
 
