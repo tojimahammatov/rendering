@@ -16,9 +16,7 @@ from datetime import datetime
 
 images = []
 
-# make sure there are only images in the directory, 
-# code is not written to filter files,
-# you can do this by using glob
+# make sure there are only images in the directory, code is not written to filter files
 abs_dir = '/path/to/images/'
 
 files = os.listdir(abs_dir)
